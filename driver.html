@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+		<title>CMPS 160: Prog 4 Driver</title>
+		<link rel="stylesheet" type="text/css" href="driver.css">
+	</head>
+	<body onload="main()">
+		<div>
+			<h3>Prog 4, Sara Sholes, ssholes</h3>
+			<input type="file" id="fileinput" />
+			<p id="SORdrawmessage">Right click to draw polyline from top to bottom, left click to terminate</p>
+			<button id="loadButton"  onclick="loadNewSOR()" type="button">Load SOR</button>
+			<button id="createSORButton" onclick="createNewSOR()" type="button">Create new SOR</button>
+			<button id="extractButton" onclick="updateScreen(glContext, lab1canvas, a_Position)" type="button">Extract SOR</button></br></br>		
+				
+			
+			<div id="showNormals">Show normals
+			<label class="switch">
+			  <input type="checkbox" onchange="toggleNormals()" >
+			  <div class="slider round"></div>
+			</label>
+			</div>
+			
+			<div id="toggleView">&nbsp;&nbsp;&nbsp;&nbsp;Set Perspective View
+			<label class="switch">
+			  <input type="checkbox" onchange="toggleView()" >
+			  <div class="slider round"></div>
+			</label>
+			</div>
+			
+			</br>
+			<div class="left-div"  id="sceneCanvas">
+				<canvas style='border: solid 2px black' id="lab1canvas" width="401" height="401">
+				Browser does not support canvas element.
+				</canvas>
+			</div>
+			
+			<div class="right-div" id="materialProperties" >
+				Material Properties:</br></br>
+				<div id="useGourand">Use Gourand Shading
+					<label class="switch">
+					  <input id="useGourandCheckbox" type="checkbox" onchange="toggleShading()" >
+					  <div class="slider round"></div>
+					</label>
+				</div>
+			
+				<div id="useSpecular">Add Specular Lighting
+					<label class="switch">
+					  <input id="useSpecularCheckbox" type="checkbox" onchange="toggleSpecular()" >
+					  <div class="slider round"></div>
+					</label>
+				</div>
+			
+				<div id="shininess">   Adjust glossyness   1
+					<input id="shinynessSlider" type="range" min="1" max="20" value="1" step="1" onchange="changeShininess(this.value)"/>20
+				</div>
+				
+				<div id="opacity">   Solid color saturation   0.0
+					<input id="opacitySlider" type="range" min="0.0" max="1.0" value="0.0" step="0.05" onchange="changeOpacity(this.value)"/>1.0
+				</div>
+				
+				
+				<table style="width=50%; font-size=5px" >
+					<tr>
+						<th></th>
+						<th>Red</th>
+						<th>Green</th>
+						<th>Blue</th>
+						<th>Color</th>
+					</tr>
+					<tr>
+						<th>Diffuse</th>
+						<th>
+							<input class="slider-width-small" id="redSlider" type="range" min="0.0" max="1.0" value="0.0" step="0.05" onchange="changeColor(this.value, 0, 0)"/>
+						</th>
+						<th>
+							<input class="slider-width-small" id="greenSlider" type="range" min="0.0" max="1.0" value="0.0" step="0.05" onchange="changeColor(this.value, 1, 0)"/>
+						</th>
+						<th>
+							<input class="slider-width-small" id="blueSlider" type="range" min="0.0" max="1.0" value="0.0" step="0.05" onchange="changeColor(this.value, 2, 0)"/>
+						</th>
+						<th>
+							<canvas style='border: solid 2px black' id="diffuseColorCanvas" width="20" height="10">
+						</th>
+					</tr>
+					<tr>
+						<th>Specular</th>
+						<th>
+							<input class="slider-width-small" class="slider-width-small" id="redSpecSlider" type="range" min="0.0" max="1.0" value="0.0" step="0.05" onchange="changeColor(this.value, 0, 1)"/>
+						</th>
+						<th>
+							<input class="slider-width-small" id="greenSpecSlider" type="range" min="0.0" max="1.0" value="0.0" step="0.05" onchange="changeColor(this.value, 1, 1)"/>
+						</th>
+						<th>
+							<input class="slider-width-small" id="blueSpecSlider" type="range" min="0.0" max="1.0" value="0.0" step="0.05" onchange="changeColor(this.value, 2, 1)"/>
+						</th>
+						<th>
+							<canvas style='border: solid 2px black' id="specColorCanvas" width="20" height="10">
+						</th>
+					</tr>
+					<tr>
+						<th>Ambient</th>
+							<th>
+							<input class="slider-width-small" id="redAmbientSlider" type="range" min="0.0" max="1.0" value="0.0" step="0.05" onchange="changeColor(this.value, 0, 2)"/>
+						</th>
+						<th>
+							<input class="slider-width-small" id="greenAmbientSlider" type="range" min="0.0" max="1.0" value="0.0" step="0.05" onchange="changeColor(this.value, 1, 2)"/>
+						</th>
+						<th>
+							<input class="slider-width-small" id="blueAmbientSlider" type="range" min="0.0" max="1.0" value="0.0" step="0.05" onchange="changeColor(this.value, 2, 2)"/>
+						</th>
+						<th>
+							<canvas style='border: solid 2px black' id="ambientColorCanvas" width="20" height="10">
+						</th>
+					</tr>
+				</table>
+				
+				<select id="selectTexture" onchange="changeTexture(this.value)">
+					<option value="text">Text</option>
+					<option value="mountains">Mountains</option>
+					<option value="cityscape">Cityscape</option>
+					<option value="noTexture">Solid No Texture</option>
+				</select>
+			</div>
+			
+				<script src="../lib/webgl-utils.js"></script>
+				<script src="../lib/webgl-debug.js"></script>
+				<script src="../lib/cuon-utils.js"></script>
+				<script src="../lib/cuon-matrix.js"></script>
+				<script src="../lib/ioSOR.js"></script>
+				<script src="driver.js"></script>
+		</div>
+	</body>
+</html>
